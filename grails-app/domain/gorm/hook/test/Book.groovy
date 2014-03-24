@@ -17,7 +17,7 @@ class Book {
 		// description = 'beforeInsert'		
 	}
 
-	def afterInsert() {
+	def afterUpdate() {
 		def id = this.id
 		Book.withNewSession { session ->
 			def book = Book.read(id)
