@@ -4,7 +4,7 @@ class Book {
 	static transients = ['afterDescription']
 	String name
 	String description
-
+	
 	String afterDescription
 
 	def beforeInsert() {
@@ -17,13 +17,15 @@ class Book {
 		// description = 'beforeInsert'		
 	}
 
-	def afterInsert() {
-		def id = this.id
-		Book.withNewSession { session ->
-			def book = Book.read(id)
-			afterDescription = book.description
-			// log.error("WOAH WE INSERTED afterInsert ${book.description}")	
-		}
+	def afterUpdate() {
+		event('bookCacheUpdate', [bookId:id], [namespace:'gorm-test'])
+
+		// def id = this.id
+		// Book.withNewSession { session ->
+		// 	def book = Book.read(id)
+		// 	afterDescription = book.description
+		// 	log.error("WOAH WE INSERTED afterInsert ${book.description}")	
+		// }
 		
 
 	}

@@ -10,6 +10,7 @@ import spock.lang.*
 class BookIntegrationSpec extends Specification {
 	static transactional = false
 	def sessionFactory
+	def cacheUpdateService
 
     def setup() {
     }
@@ -17,10 +18,6 @@ class BookIntegrationSpec extends Specification {
     def cleanup() {
     }
 
-    void "test if session is transactional"() {
-		assert !sessionFactory.currentSession.isTransactionInProgress()
-
-    }
 
     void "test if gorm hook is called"() {
     	given:
@@ -28,7 +25,7 @@ class BookIntegrationSpec extends Specification {
     	when:
 	    	book.save(flush:true)
     	then:
-	    	assert book.description == 'beforeInsert'
+	    	book.description == 'beforeInsert'
     }
 
     void "test if gorm hook is called in session Context"() {
@@ -39,7 +36,7 @@ class BookIntegrationSpec extends Specification {
 		    	book.save(flush:true)
 		    }
 		expect:
-	    	assert book.description == 'beforeInsert'
+	    	book.description == 'beforeInsert'
 	    
     }
 
@@ -52,8 +49,8 @@ class BookIntegrationSpec extends Specification {
     		book.description = "Nice!"
     		book.save(flush:true)
 		then:
-			assert book.description  == 'Nice!'
-			assert book.afterDescription == 'Nice!'
-
+			sleep(2000)
+			book.description  == 'Nice!'
+			cacheUpdateService.lastValue == 'Nice!'
     }
 }
